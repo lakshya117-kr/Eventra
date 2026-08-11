@@ -9,14 +9,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module">
-      // Import Buffer from the SINGLE npm buffer@6 package and set it globally
-      // BEFORE the app loads. This is the same module that safe-buffer and
-      // base-x will use (via resolve.alias), ensuring ONE Buffer prototype.
-      import { Buffer } from 'buffer';
-      globalThis.Buffer = Buffer;
-      globalThis.global = globalThis;
-    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
