@@ -5,6 +5,11 @@ import { PINATA_JWT, PINATA_GATEWAY } from './constants';
  * Returns the CID (Content Identifier).
  */
 export async function uploadFileToPinata(file: File): Promise<string> {
+  if (!PINATA_JWT || PINATA_JWT === 'your_pinata_jwt_here') {
+    console.warn("Pinata JWT not configured. Returning mock CID for image.");
+    return "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"; // Mock CID
+  }
+
   const formData = new FormData();
   formData.append('file', file);
 
@@ -24,6 +29,11 @@ export async function uploadFileToPinata(file: File): Promise<string> {
  * Returns the metadata CID.
  */
 export async function uploadMetadataToPinata(metadata: Record<string, unknown>): Promise<string> {
+  if (!PINATA_JWT || PINATA_JWT === 'your_pinata_jwt_here') {
+    console.warn("Pinata JWT not configured. Returning mock CID for metadata.");
+    return "QmZ4tDuvesek1363s8Tcv534aKq7zmbUvjEDzE9n27fX2E"; // Mock CID
+  }
+
   const res = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
     method: 'POST',
     headers: {

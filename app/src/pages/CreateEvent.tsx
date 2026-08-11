@@ -40,7 +40,10 @@ export default function CreateEvent() {
       const priceInSmallestUnit = Math.floor(parseFloat(form.ticketPrice) * 10 ** TOKEN_DECIMALS);
       await createEvent(priceInSmallestUnit, parseInt(form.maxTickets), metadataCid, form.name);
       navigate('/events');
-    } catch { setUploading(false); }
+    } catch (error: any) { 
+      toast.error(error.message || 'Failed to upload event data');
+      setUploading(false); 
+    }
   };
 
   return (
