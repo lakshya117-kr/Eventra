@@ -1,20 +1,11 @@
 /**
- * postinstall patch: Rewrites safe-buffer to use globalThis.Buffer,
- * eliminating the "Expected Buffer" error caused by Buffer prototype
- * mismatches between different buffer package copies.
- *
- * The root cause: vite-plugin-node-polyfills injects its own buffer@5
- * as globalThis.Buffer, but safe-buffer imports a SEPARATE copy of buffer.
- * base-x uses safe-buffer's Buffer for isBuffer() checks, which fails
- * when given a Buffer instance from the polyfill's buffer.
- *
- * Fix: Replace safe-buffer's entire implementation with a simple module
- * that returns globalThis.Buffer, ensuring all code uses the same Buffer.
+ * postinstall patch: Fixes Solana/Phantom wallet cross-realm Uint8Array issues
+ * and Buffer prototype mismatches in base-x and safe-buffer.
  */
 const fs = require('fs');
 const path = require('path');
 
-// Patch safe-buffer to use globalThis.Buffer
+// 1. Patch safe-buffer to use globalThis.Buffer
 const safeBufferPath = path.join(__dirname, '..', 'node_modules', 'safe-buffer', 'index.js');
 try {
   const shim = `
@@ -25,24 +16,34 @@ module.exports = { Buffer: Buffer };
 module.exports.Buffer = Buffer;
 `;
   fs.writeFileSync(safeBufferPath, shim, 'utf8');
-  console.log('✅ Patched safe-buffer to use globalThis.Buffer');
+  console.log('✅ Patched safe-buffer');
 } catch (err) {
   console.warn('⚠️  Could not patch safe-buffer:', err.message);
 }
 
-// Also patch base-x to use require('buffer') instead of require('safe-buffer')
+// 2. Patch base-x to handle cross-realm Uint8Arrays from Phantom Wallet
 const baseXPath = path.join(__dirname, '..', 'node_modules', 'base-x', 'src', 'index.js');
 try {
   let content = fs.readFileSync(baseXPath, 'utf8');
+  
+  // Fix Buffer prototype mismatch (just in case safe-buffer patch doesn't catch it)
   if (content.includes("require('safe-buffer')")) {
-    content = content.replace(
-      "require('safe-buffer').Buffer",
-      "require('buffer').Buffer"
-    );
+    content = content.replace("require('safe-buffer').Buffer", "require('buffer').Buffer");
+  }
+
+  // FIX THE "Expected Buffer" cross-realm bug!
+  // Phantom wallet passes Uint8Arrays from its extension context.
+  // 'source instanceof Uint8Array' evaluates to FALSE for cross-realm objects.
+  // We need to duck-type it by checking for .byteLength or .buffer
+  const targetStr = 'source instanceof Uint8Array';
+  const replacementStr = '(source instanceof Uint8Array || (source && source.byteLength !== undefined))';
+  
+  if (content.includes(targetStr) && !content.includes(replacementStr)) {
+    content = content.replace(targetStr, replacementStr);
     fs.writeFileSync(baseXPath, content, 'utf8');
-    console.log('✅ Patched base-x to use buffer instead of safe-buffer');
+    console.log('✅ Patched base-x for Phantom cross-realm Uint8Arrays');
   } else {
-    console.log('ℹ️  base-x already patched');
+    console.log('ℹ️  base-x already patched for Phantom');
   }
 } catch (err) {
   console.warn('⚠️  Could not patch base-x:', err.message);
