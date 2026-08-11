@@ -1,0 +1,60 @@
+import { useState, useCallback } from 'react';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { useProgram } from './useProgram';
+import { SEEDS } from '../utils/constants';
+import { computeNullifierHash, generateMockProof, getTicketSecret } from '../utils/zk';
+import toast from 'react-hot-toast';
+
+export function useVerifyCheckIn() {
+  const { program, wallet } = useProgram();
+  const [loading, setLoading] = useState(false);
+
+  const verifyCheckIn = useCallback(async (
+    eventPublicKey: PublicKey,
+    ticketRecordKey: PublicKey,
+    commitmentHex: string,
+  ) => {
+    if (!program || !wallet.publicKey) return;
+    setLoading(true);
+    try {
+      // 1. Retrieve the stored secret
+      const secret = getTicketSecret(eventPublicKey.toString(), commitmentHex);
+      if (!secret) throw new Error('Ticket secret not found. Was the ticket booked from this device?');
+
+      // 2. Compute nullifier hash
+      const nullifierHash = await computeNullifierHash(secret, eventPublicKey.toBytes());
+      const nullifierArray = Array.from(nullifierHash);
+
+      // 3. Generate proof (mock for demo — real ZK proving would go here)
+      const { proofA, proofB, proofC } = generateMockProof();
+
+      // 4. Derive nullifier registry PDA
+      const [nullifierRegistry] = PublicKey.findProgramAddressSync(
+        [SEEDS.NULLIFIER, eventPublicKey.toBuffer(), Buffer.from(nullifierHash)],
+        program.programId
+      );
+
+      // 5. Send verify_check_in transaction
+      const tx = await program.methods
+        .verifyCheckIn(nullifierArray, proofA, proofB, proofC)
+        .accounts({
+          scanner: wallet.publicKey,
+          eventAccount: eventPublicKey,
+          ticketRecord: ticketRecordKey,
+          nullifierRegistry,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+
+      toast.success('Check-in verified! Welcome to the event.');
+      return tx;
+    } catch (e: any) {
+      toast.error(e.message || 'Check-in verification failed');
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, [program, wallet.publicKey]);
+
+  return { verifyCheckIn, loading };
+}
