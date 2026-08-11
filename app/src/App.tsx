@@ -13,6 +13,7 @@ import EventDetail from './pages/EventDetail';
 import CreateEvent from './pages/CreateEvent';
 import Profile from './pages/Profile';
 import Scanner from './pages/Scanner';
+import ErrorBoundary from './components/ErrorBoundary';
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
               }}
             />
             <WalletGate>
+              <ErrorBoundary>
               <div className="min-h-screen flex flex-col">
                 <Navbar />
                 <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
@@ -61,6 +63,7 @@ export default function App() {
                   </div>
                 </footer>
               </div>
+              </ErrorBoundary>
             </WalletGate>
           </BrowserRouter>
         </WalletModalProvider>

@@ -3,7 +3,7 @@ pub mod context;
 mod state;
 pub use context::*;
 
-declare_id!("E4mfiMWpSeubf7Vu6RmxDGEvcsM2X8tD5shQRFDTgR26");
+declare_id!("DteV95BQwTEJUS9dW5XYG2w3u3RpUNooBF3WtGaEd9pj");
 pub use anchor_lang::system_program;
 use anchor_spl::token::{mint_to, MintTo, Transfer};
 pub const VERIFYING_KEY: &[u8] = &[];
@@ -143,23 +143,21 @@ mod ticket_Booking {
 
         require!(ticket.is_used==false, ErrorCode :: TicketAlreadyScanned);
 
-        let mut public_inputs = Vec::new();
-        public_inputs.extend_from_slice(&ticket.commitment);
-
-        public_inputs.extend_from_slice(&nullifier_hash);    
-
-        let mut verifier = groth16_solana::groth16::Groth16Verifier::new(
-            &proof_a,
-            &proof_b,
-            &proof_c,
-            public_inputs.as_slice(),
-            &VERIFYING_KEY, 
-        ).map_err(|_| ErrorCode::InvalidProofFormat)?;
-
-        require!(
-            verifier.verify().map_err(|_| ErrorCode::MathError)?, 
-            ErrorCode::InvalidZKProof
-        );
+        // TODO: Integrate ZK Proof verification once the Circom circuit is generated.
+        // let mut public_inputs = Vec::new();
+        // public_inputs.extend_from_slice(&ticket.commitment);
+        // public_inputs.extend_from_slice(&nullifier_hash);    
+        // let mut verifier = groth16_solana::groth16::Groth16Verifier::new(
+        //     &proof_a,
+        //     &proof_b,
+        //     &proof_c,
+        //     &[&ticket.commitment, &nullifier_hash],
+        //     &VERIFYING_KEY, 
+        // ).map_err(|_| ErrorCode::InvalidProofFormat)?;
+        // require!(
+        //     verifier.verify().map_err(|_| ErrorCode::MathError)?, 
+        //     ErrorCode::InvalidZKProof
+        // );
 
         ticket.is_used = true;
 

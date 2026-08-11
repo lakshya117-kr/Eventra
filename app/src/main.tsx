@@ -1,3 +1,6 @@
+// Polyfills MUST be imported first — before any Solana/Anchor code runs
+import './polyfills';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';

@@ -13,12 +13,12 @@ export function useTokenEconomy() {
   const [solBalance, setSolBalance] = useState<number>(0);
 
   const refreshBalances = useCallback(async () => {
-    if (!wallet.publicKey || !connection) return;
+    if (!wallet.publicKey || !connection || !program) return;
     try {
       const sol = await connection.getBalance(wallet.publicKey);
       setSolBalance(sol / LAMPORTS_PER_SOL);
 
-      const [xMint] = PublicKey.findProgramAddressSync([SEEDS.X_MINT], program!.programId);
+      const [xMint] = PublicKey.findProgramAddressSync([SEEDS.X_MINT], program.programId);
       const ata = await getAssociatedTokenAddress(xMint, wallet.publicKey);
       try {
         const info = await connection.getTokenAccountBalance(ata);

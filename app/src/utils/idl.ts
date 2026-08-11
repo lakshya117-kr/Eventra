@@ -204,7 +204,7 @@ export type TicketBooking = {
 export const IDL: TicketBooking = {
   version: '0.1.0',
   name: 'ticket_booking',
-  address: 'E4mfiMWpSeubf7Vu6RmxDGEvcsM2X8tD5shQRFDTgR26',
+  address: 'DteV95BQwTEJUS9dW5XYG2w3u3RpUNooBF3WtGaEd9pj',
   metadata: { name: 'ticket_booking', version: '0.1.0', spec: '0.1.0' },
   instructions: [
     {
