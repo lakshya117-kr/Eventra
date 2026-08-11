@@ -1,36 +1,46 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import path from 'path'
 
-// Resolve the SINGLE buffer@6 package that all code must share
-const bufferPath = path.resolve(import.meta.dirname, 'node_modules/buffer')
+/**
+ * Intercepts require('safe-buffer') and returns a virtual module that
+ * grabs Buffer from the global scope (where vite-plugin-node-polyfills
+ * already injected it). This ensures base-x/bs58/Anchor all use the
+ * exact same Buffer prototype as globalThis.Buffer.
+ */
+function patchSafeBuffer(): Plugin {
+  const SHIM_ID = '\0safe-buffer-shim'
+  return {
+    name: 'patch-safe-buffer',
+    enforce: 'pre',
+    resolveId(source) {
+      if (source === 'safe-buffer') return SHIM_ID
+      return null
+    },
+    load(id) {
+      if (id === SHIM_ID) {
+        // Use globalThis.Buffer directly — the nodePolyfills plugin
+        // injects it before any module code runs.
+        return `
+          var Buffer = globalThis.Buffer;
+          module.exports = { Buffer: Buffer };
+          module.exports.Buffer = Buffer;
+        `
+      }
+      return null
+    },
+  }
+}
 
 export default defineConfig({
   plugins: [
     react(),
+    patchSafeBuffer(),
     nodePolyfills({
-      // Exclude buffer — we handle it ourselves to avoid version conflicts
-      exclude: ['buffer'],
-      include: ['crypto', 'stream', 'util'],
-      // Buffer: false is CRITICAL — the plugin's default buffer shim uses
-      // buffer@5 (from node-stdlib-browser) which has a different prototype
-      // than our buffer@6, causing Buffer.isBuffer() cross-version failures.
-      globals: { Buffer: false, global: true, process: true },
+      include: ['buffer', 'crypto', 'stream', 'util'],
+      globals: { Buffer: true, global: true, process: true },
     }),
   ],
-  resolve: {
-    alias: {
-      // Force every import of 'buffer' or 'safe-buffer' to resolve to
-      // the project's buffer@6.0.3, preventing prototype mismatches
-      // that cause "Expected Buffer" errors in base-x / bs58 / Anchor.
-      buffer: bufferPath,
-      'safe-buffer': bufferPath,
-    },
-  },
-  optimizeDeps: {
-    include: ['buffer'],
-  },
   define: {
     'process.env': {},
   },
