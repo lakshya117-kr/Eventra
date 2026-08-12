@@ -18,4 +18,13 @@ export default defineConfig({
   define: {
     'process.env': {},
   },
+  optimizeDeps: {
+    exclude: ['@aztec/bb.js'],
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
+  build: {
+    target: 'esnext',
+  },
 })

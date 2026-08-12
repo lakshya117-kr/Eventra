@@ -89,9 +89,9 @@ export default function Scanner() {
           <div className="space-y-3">
             {[
               { icon: Lock, step: '1', text: 'Retrieve stored ticket secret from device' },
-              { icon: Fingerprint, step: '2', text: 'Compute nullifier = SHA-256(secret ‖ event_key)' },
-              { icon: Shield, step: '3', text: 'Generate Groth16 ZK proof locally' },
-              { icon: ScanLine, step: '4', text: 'Submit verify_check_in on-chain' },
+              { icon: Fingerprint, step: '2', text: 'Compute nullifier = SHA-256(secret || event_key)' },
+              { icon: Shield, step: '3', text: 'Generate Noir ZK proof (UltraHonk) locally in browser' },
+              { icon: ScanLine, step: '4', text: 'Verify proof client-side, then submit on-chain' },
               { icon: Eye, step: '5', text: 'Nullifier registry prevents double-entry' },
             ].map((item) => (
               <div key={item.step} className="flex items-center gap-3 group">
