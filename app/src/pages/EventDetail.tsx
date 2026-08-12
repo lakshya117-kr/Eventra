@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PublicKey } from '@solana/web3.js';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Ticket, MapPin, Calendar, User, Loader2, CheckCircle2, Shield } from 'lucide-react';
+import { ArrowLeft, Ticket, MapPin, Calendar, User, Loader2, CheckCircle2, Shield, Copy } from 'lucide-react';
 import PageContainer from '../components/layout/PageContainer';
 import { useProgram } from '../hooks/useProgram';
 import { useBookTicket } from '../hooks/useBookTicket';
@@ -61,11 +61,19 @@ export default function EventDetail() {
     load();
   }, [program, eventKey]);
 
+  const [bookedDetails, setBookedDetails] = useState<{ commitment: string; ticketRecord: string } | null>(null);
+
   const handleBook = async () => {
     if (!event || !eventKey) return;
     try {
-      await bookTicket(new PublicKey(eventKey), event.organizer);
-      setBooked(true);
+      const result = await bookTicket(new PublicKey(eventKey), event.organizer);
+      if (result) {
+        setBooked(true);
+        setBookedDetails({
+          commitment: result.commitment,
+          ticketRecord: result.ticketRecord.toString()
+        });
+      }
     } catch {}
   };
 
@@ -167,10 +175,46 @@ export default function EventDetail() {
             </div>
 
             {/* Book Button */}
-            {booked ? (
-              <div className="flex items-center justify-center gap-2 py-3 text-emerald-400 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
-                <CheckCircle2 className="w-5 h-5" />
-                <span className="font-medium text-sm">Ticket Booked!</span>
+            {booked && bookedDetails ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-center gap-2 py-3 text-emerald-400 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-4">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span className="font-medium text-sm">Ticket Booked!</span>
+                </div>
+                
+                <div className="p-3 bg-surface-3 rounded-lg border border-white/5 space-y-3">
+                  <p className="text-xs text-zinc-400 mb-2">Save these for the Scanner Demo:</p>
+                  
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] uppercase tracking-wider text-zinc-500">Event Account</span>
+                      <button onClick={() => navigator.clipboard.writeText(eventKey || '')} className="text-zinc-500 hover:text-accent transition-colors">
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <code className="block text-xs text-zinc-300 truncate bg-surface-2 p-1.5 rounded">{eventKey}</code>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] uppercase tracking-wider text-zinc-500">Ticket Record</span>
+                      <button onClick={() => navigator.clipboard.writeText(bookedDetails.ticketRecord)} className="text-zinc-500 hover:text-accent transition-colors">
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <code className="block text-xs text-zinc-300 truncate bg-surface-2 p-1.5 rounded">{bookedDetails.ticketRecord}</code>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] uppercase tracking-wider text-zinc-500">Commitment (Hex)</span>
+                      <button onClick={() => navigator.clipboard.writeText(bookedDetails.commitment)} className="text-zinc-500 hover:text-accent transition-colors">
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <code className="block text-xs text-zinc-300 truncate bg-surface-2 p-1.5 rounded">{bookedDetails.commitment}</code>
+                  </div>
+                </div>
               </div>
             ) : (
               <button
