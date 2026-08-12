@@ -52,7 +52,7 @@ export default function TokenPanel({ mode, onSubmit, loading, tokenBalance, solB
         </div>
 
         <div className="flex items-center justify-between text-xs text-zinc-500 px-1">
-          <span>Balance: {isBuy ? `${solBalance.toFixed(4)} SOL` : `${tokenBalance.toFixed(2)} XTKN`}</span>
+          <span>Balance: {isBuy ? `${solBalance.toFixed(4)} SOL` : `${tokenBalance.toFixed(0)} XTKN Units`}</span>
           <ArrowDownUp className="w-3 h-3" />
         </div>
 

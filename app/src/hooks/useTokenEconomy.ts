@@ -22,7 +22,10 @@ export function useTokenEconomy() {
       const ata = await getAssociatedTokenAddress(xMint, wallet.publicKey);
       try {
         const info = await connection.getTokenAccountBalance(ata);
-        setTokenBalance(Number(info.value.uiAmount || 0));
+        // 1 unit in the contract = 100,000,000 raw tokens
+        // Since decimals is 5, 1 unit = 1,000 uiAmount
+        // Divide by 1000 to show the balance in "units" to match the input form.
+        setTokenBalance(Number(info.value.uiAmount || 0) / 1000);
       } catch {
         setTokenBalance(0);
       }
