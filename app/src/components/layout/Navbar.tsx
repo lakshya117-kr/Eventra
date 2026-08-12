@@ -20,7 +20,7 @@ export default function Navbar() {
             <Ticket className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-semibold tracking-tight gradient-text hidden sm:block">
-            ZKTicket
+            Eventra
           </span>
         </NavLink>
 

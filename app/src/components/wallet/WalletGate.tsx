@@ -65,7 +65,7 @@ export default function WalletGate({ children }: WalletGateProps) {
 
             {/* Title */}
             <h1 className="text-4xl font-bold mb-3 tracking-tight">
-              <span className="gradient-text">ZKTicket</span>
+              <span className="gradient-text">Eventra</span>
             </h1>
             <p className="text-zinc-400 text-lg mb-2">
               Decentralized Event Ticketing
