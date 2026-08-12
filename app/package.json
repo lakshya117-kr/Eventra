@@ -13,7 +13,7 @@
   "dependencies": {
     "@aztec/bb.js": "^5.1.0",
     "@coral-xyz/anchor": "^0.30.1",
-    "@noir-lang/noir_js": "^1.0.0-beta.26",
+    "@noir-lang/noir_js": "^1.0.0-beta.20",
     "@solana/spl-token": "^0.4.15",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-react": "^0.15.39",
