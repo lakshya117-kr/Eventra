@@ -19,7 +19,7 @@ export default defineConfig({
     'process.env': {},
   },
   optimizeDeps: {
-    exclude: ['@aztec/bb.js'],
+    exclude: ['@noir-lang/backend_barretenberg', '@noir-lang/noir_js'],
     esbuildOptions: {
       target: 'esnext',
     },

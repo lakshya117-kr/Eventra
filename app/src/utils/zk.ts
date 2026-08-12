@@ -5,7 +5,7 @@
  */
 
 import { Noir } from '@noir-lang/noir_js';
-import { UltraHonkBackend } from '@aztec/bb.js';
+import { UltraHonkBackend } from '@noir-lang/backend_barretenberg';
 import circuit from './circuit.json';
 
 // ===================== TYPES =====================
@@ -53,7 +53,7 @@ let _backend: UltraHonkBackend | null = null;
 async function getNoirInstances(): Promise<{ noir: Noir; backend: UltraHonkBackend }> {
   if (!_noir || !_backend) {
     // @ts-ignore - circuit.json is a compiled Noir artifact
-    _backend = new UltraHonkBackend(circuit.bytecode);
+    _backend = new UltraHonkBackend(circuit);
     // @ts-ignore
     _noir = new Noir(circuit);
   }
