@@ -16,12 +16,13 @@ async function main() {
   const keypair = anchor.web3.Keypair.fromSecretKey(Buffer.from(JSON.parse(keypairFile)));
 
   // Setup connection to Devnet
-  const connection = new anchor.web3.Connection("https://api.devnet.solana.com", "confirmed");
+  const rpcUrl = process.env.VITE_RPC_ENDPOINT || "https://api.devnet.solana.com";
+  const connection = new anchor.web3.Connection(rpcUrl, "confirmed");
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, { commitment: "confirmed" });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc");
+  const programId = new PublicKey("82Tzgv6JU15FD6jQH1hLwuvBDj8VjQ2Dz1SdnonU3ciA");
   const program = new Program(IDL as any, provider);
 
   // Find PDAs

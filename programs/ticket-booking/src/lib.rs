@@ -3,7 +3,7 @@ pub mod context;
 mod state;
 pub use context::*;
 
-declare_id!("CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc");
+declare_id!("82Tzgv6JU15FD6jQH1hLwuvBDj8VjQ2Dz1SdnonU3ciA");
 pub use anchor_lang::system_program;
 use anchor_spl::token::{mint_to, MintTo, Transfer};
 pub const VERIFYING_KEY: &[u8] = &[];
@@ -17,7 +17,7 @@ mod ticket_Booking {
         user_config_account.x_mint = ctx.accounts.x_mint.key();
         user_config_account.user_token_account = ctx.accounts.user_token_account.key();
         user_config_account.solana_price = sol_pri;
-        user_config_account.token_per_purchase = 1000 * 100_000;
+        user_config_account.token_per_purchase = 1 * 100_000;
         user_config_account.bump = ctx.bumps.user_config;
         Ok(())
     }

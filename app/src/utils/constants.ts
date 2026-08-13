@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 
-export const PROGRAM_ID = new PublicKey('CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc');
+export const PROGRAM_ID = new PublicKey('82Tzgv6JU15FD6jQH1hLwuvBDj8VjQ2Dz1SdnonU3ciA');
 export const RPC_ENDPOINT = import.meta.env.VITE_RPC_ENDPOINT || 'https://api.devnet.solana.com';
 export const PINATA_JWT = import.meta.env.VITE_PINATA_JWT || '';
 export const PINATA_GATEWAY = import.meta.env.VITE_PINATA_GATEWAY || 'https://gateway.pinata.cloud';
