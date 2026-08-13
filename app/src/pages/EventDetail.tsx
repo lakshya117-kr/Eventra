@@ -66,7 +66,7 @@ export default function EventDetail() {
   const handleBook = async () => {
     if (!event || !eventKey) return;
     try {
-      const result = await bookTicket(new PublicKey(eventKey), event.organizer);
+      const result = await bookTicket(new PublicKey(eventKey), event.organizer, event.ticketPrice);
       if (result) {
         setBooked(true);
         setBookedDetails({
