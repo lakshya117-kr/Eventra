@@ -62,7 +62,11 @@ export function useTokenEconomy() {
       await refreshBalances();
       return tx;
     } catch (e: any) {
-      toast.error(e.message || 'Buy failed');
+      if (e.message?.includes('AccountNotInitialized')) {
+        toast.error('Please create your profile first!');
+      } else {
+        toast.error(e.message || 'Buy failed');
+      }
       throw e;
     } finally {
       setLoading(false);
@@ -95,7 +99,11 @@ export function useTokenEconomy() {
       await refreshBalances();
       return tx;
     } catch (e: any) {
-      toast.error(e.message || 'Sell failed');
+      if (e.message?.includes('AccountNotInitialized')) {
+        toast.error('Please create your profile first!');
+      } else {
+        toast.error(e.message || 'Sell failed');
+      }
       throw e;
     } finally {
       setLoading(false);
