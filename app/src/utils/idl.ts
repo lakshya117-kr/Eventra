@@ -9,7 +9,7 @@
 // Account types are defined in `types` array in Anchor 0.30.
 
 export const IDL = {
-  address: 'DteV95BQwTEJUS9dW5XYG2w3u3RpUNooBF3WtGaEd9pj',
+  address: 'CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc',
   metadata: { name: 'ticket_booking', version: '0.1.0', spec: '0.1.0' },
   instructions: [
     {

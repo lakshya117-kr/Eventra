@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-ticket_booking = "DteV95BQwTEJUS9dW5XYG2w3u3RpUNooBF3WtGaEd9pj"
+ticket_booking = "CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc"
 
 [registry]
 url = "https://api.apr.dev"

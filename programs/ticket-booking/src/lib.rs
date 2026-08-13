@@ -3,7 +3,7 @@ pub mod context;
 mod state;
 pub use context::*;
 
-declare_id!("DteV95BQwTEJUS9dW5XYG2w3u3RpUNooBF3WtGaEd9pj");
+declare_id!("CRGSNcfeaJ5cFHyZTuwU1A15HxABMK6p5EAcFhU1tcUc");
 pub use anchor_lang::system_program;
 use anchor_spl::token::{mint_to, MintTo, Transfer};
 pub const VERIFYING_KEY: &[u8] = &[];
