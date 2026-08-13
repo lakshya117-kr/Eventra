@@ -23,7 +23,7 @@ export default function Dashboard() {
 
   const stats = [
     { label: 'SOL Balance', value: `${solBalance.toFixed(4)}`, icon: Wallet, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-    { label: 'XTKN Balance (Units)', value: `${tokenBalance.toFixed(0)}`, icon: Coins, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+    { label: 'XTKN Balance', value: `${tokenBalance.toFixed(2)}`, icon: Coins, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
     { label: 'Network', value: 'Devnet', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-500/10' },
     { label: 'ZK Proofs', value: 'Groth16', icon: Shield, color: 'text-accent', bg: 'bg-accent/10' },
   ];
