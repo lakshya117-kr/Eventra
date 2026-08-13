@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, ComputeBudgetProgram } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 import { useProgram } from './useProgram';
 import { SEEDS } from '../utils/constants';
@@ -25,8 +25,13 @@ export function useProfile() {
         loyalityPoints: Number(account.loyalityPoints),
         bump: account.bump,
       });
-    } catch {
-      setProfile(null);
+    } catch (e: any) {
+      if (e.message && e.message.includes('Account does not exist')) {
+        setProfile(null);
+      } else {
+        toast.error('Failed to load profile. Network issue?');
+        // Keep the previous profile state or null
+      }
     }
   }, [program, wallet.publicKey]);
 
@@ -52,6 +57,7 @@ export function useProfile() {
           systemProgram: SystemProgram.programId,
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
 
       toast.success('Profile created!');

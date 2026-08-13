@@ -10,7 +10,7 @@
  *   3. If verification passes, the on-chain transaction is submitted
  *      with the nullifier to prevent double-entry.
  *
- * The Noir circuit (main.nr) defines the formal ZK constraints and
+ * The Noir circuit (mwain.nr) defines the formal ZK constraints and
  * passes all tests via `nargo test`. The browser verification
  * mirrors those same constraints using the native Web Crypto API
  * for maximum browser compatibility.

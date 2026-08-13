@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, ComputeBudgetProgram } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 import { useProgram } from './useProgram';
 import { SEEDS, TOKEN_DECIMALS } from '../utils/constants';
@@ -71,6 +71,7 @@ export function useBookTicket() {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
 
       // 4. Store secret for later check-in

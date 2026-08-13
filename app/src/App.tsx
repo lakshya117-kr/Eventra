@@ -20,7 +20,7 @@ export default function App() {
   const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
 
   return (
-    <ConnectionProvider endpoint={RPC_ENDPOINT}>
+    <ConnectionProvider endpoint={RPC_ENDPOINT} config={{ commitment: 'confirmed' }}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <BrowserRouter>

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PublicKey, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { PublicKey, SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 import { BN } from '@coral-xyz/anchor';
 import { useProgram } from './useProgram';
@@ -56,6 +56,7 @@ export function useTokenEconomy() {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
       
       toast.success(`Bought ${amount} token unit(s)!`);
@@ -93,6 +94,7 @@ export function useTokenEconomy() {
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
       
       toast.success(`Sold ${amount} token unit(s)!`);

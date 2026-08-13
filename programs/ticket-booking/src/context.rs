@@ -146,7 +146,7 @@ pub struct CreateProfile<'info> {
     pub user_account: Account<'info, CustomerProfile>,
 
     #[account(
-        init,
+        init_if_needed,
         payer = user,
         associated_token::mint = x_mint,
         associated_token::authority = user,

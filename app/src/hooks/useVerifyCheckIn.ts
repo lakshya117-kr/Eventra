@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, ComputeBudgetProgram } from '@solana/web3.js';
 import { useProgram } from './useProgram';
 import { SEEDS } from '../utils/constants';
 import { computeNullifierHash, generateZKProof, formatProofForContract, getTicketSecret, computeCommitment } from '../utils/zk';
@@ -62,6 +62,7 @@ export function useVerifyCheckIn() {
           nullifierRegistry,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
 
       toast.success('Check-in verified! Welcome to the event.');

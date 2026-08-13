@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, ComputeBudgetProgram } from '@solana/web3.js';
 import { BN } from '@coral-xyz/anchor';
 import { useProgram } from './useProgram';
 import { SEEDS } from '../utils/constants';
@@ -25,8 +25,12 @@ export function useOrganizer() {
         totalEventHosted: Number(account.totalEventHosted),
         bump: account.bump,
       });
-    } catch {
-      setOrganizer(null);
+    } catch (e: any) {
+      if (e.message && e.message.includes('Account does not exist')) {
+        setOrganizer(null);
+      } else {
+        toast.error('Failed to load organizer. Network issue?');
+      }
     }
   }, [program, wallet.publicKey]);
 
@@ -45,6 +49,7 @@ export function useOrganizer() {
           organizerAccount,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
 
       toast.success('Registered as organizer!');
@@ -84,6 +89,7 @@ export function useOrganizer() {
           organizerAccount,
           systemProgram: SystemProgram.programId,
         })
+        .preInstructions([ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 100_000 })])
         .rpc();
 
       toast.success('Event created!');
