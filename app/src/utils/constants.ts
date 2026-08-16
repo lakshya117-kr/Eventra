@@ -21,3 +21,6 @@ export const SEEDS = {
 } as const;
 
 export const TOKEN_DECIMALS = 5;
+
+// Metaplex Token Metadata Program
+export const TOKEN_METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');

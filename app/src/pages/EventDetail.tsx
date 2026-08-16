@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PublicKey } from '@solana/web3.js';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Ticket, MapPin, Calendar, User, Loader2, CheckCircle2, Shield, Copy } from 'lucide-react';
+import { ArrowLeft, Ticket, MapPin, Calendar, User, Loader2, CheckCircle2, Shield, Copy, Sparkles, ExternalLink } from 'lucide-react';
 import PageContainer from '../components/layout/PageContainer';
 import { useProgram } from '../hooks/useProgram';
 import { useBookTicket } from '../hooks/useBookTicket';
@@ -61,17 +61,28 @@ export default function EventDetail() {
     load();
   }, [program, eventKey]);
 
-  const [bookedDetails, setBookedDetails] = useState<{ commitment: string; ticketRecord: string } | null>(null);
+  const [bookedDetails, setBookedDetails] = useState<{
+    commitment: string;
+    ticketRecord: string;
+    nftMint?: string;
+  } | null>(null);
 
   const handleBook = async () => {
     if (!event || !eventKey) return;
     try {
-      const result = await bookTicket(new PublicKey(eventKey), event.organizer, event.ticketPrice);
+      const result = await bookTicket(
+        new PublicKey(eventKey),
+        event.organizer,
+        event.ticketPrice,
+        event.name,
+        metadata?.description,
+      );
       if (result) {
         setBooked(true);
         setBookedDetails({
           commitment: result.commitment,
-          ticketRecord: result.ticketRecord.toString()
+          ticketRecord: result.ticketRecord.toString(),
+          nftMint: result.nftMint,
         });
       }
     } catch {}
@@ -168,6 +179,12 @@ export default function EventDetail() {
               </div>
             </div>
 
+            {/* NFT Badge */}
+            <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/5 border border-purple-500/10 rounded-xl">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <p className="text-xs text-zinc-400">An NFT will be minted to your wallet as proof of ticket</p>
+            </div>
+
             {/* ZK Info */}
             <div className="flex items-center gap-2 px-3 py-2 bg-accent/5 border border-accent/10 rounded-xl">
               <Shield className="w-4 h-4 text-accent" />
@@ -179,8 +196,41 @@ export default function EventDetail() {
               <div className="space-y-3">
                 <div className="flex items-center justify-center gap-2 py-3 text-emerald-400 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-4">
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="font-medium text-sm">Ticket Booked!</span>
+                  <span className="font-medium text-sm">Ticket Booked & NFT Minted!</span>
                 </div>
+
+                {/* NFT Mint Card */}
+                {bookedDetails.nftMint && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 via-surface-3 to-pink-500/10 border border-purple-500/20"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm font-semibold text-zinc-100">Your Ticket NFT</span>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <code className="flex-1 text-xs text-zinc-300 truncate bg-surface-2 p-1.5 rounded">
+                        {bookedDetails.nftMint}
+                      </code>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(bookedDetails.nftMint || '')}
+                        className="text-zinc-500 hover:text-accent transition-colors"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <a
+                      href={`https://explorer.solana.com/address/${bookedDetails.nftMint}?cluster=devnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                    >
+                      View on Explorer <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </motion.div>
+                )}
                 
                 <div className="p-3 bg-surface-3 rounded-lg border border-white/5 space-y-3">
                   <p className="text-xs text-zinc-400 mb-2">Save these for the Scanner Demo:</p>
@@ -223,7 +273,7 @@ export default function EventDetail() {
                 className="btn-primary w-full flex items-center justify-center gap-2"
               >
                 {bookLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {ticketsLeft === 0 ? 'Sold Out' : 'Book Ticket'}
+                {ticketsLeft === 0 ? 'Sold Out' : '🎫 Book Ticket & Mint NFT'}
               </button>
             )}
           </motion.div>

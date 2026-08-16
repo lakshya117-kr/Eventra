@@ -1,11 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
-import { User, Award, Coins, Copy, CheckCircle2, Loader2, Ticket, Shield, ExternalLink } from 'lucide-react';
+import { User, Award, Coins, Copy, CheckCircle2, Loader2, Ticket, Shield, ExternalLink, Sparkles, Image as ImageIcon } from 'lucide-react';
 import PageContainer from '../components/layout/PageContainer';
 import { useProfile } from '../hooks/useProfile';
 import { useTokenEconomy } from '../hooks/useTokenEconomy';
 import toast from 'react-hot-toast';
+
+interface StoredNft {
+  mint: string;
+  eventKey: string;
+  eventName: string;
+  bookedAt: string;
+}
 
 export default function Profile() {
   const { publicKey } = useWallet();
@@ -33,6 +40,13 @@ export default function Profile() {
       });
     } catch { return []; }
   })();
+
+  // Get stored NFTs from localStorage
+  const [storedNfts] = useState<StoredNft[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('nft_mints') || '[]');
+    } catch { return []; }
+  });
 
   return (
     <PageContainer title="Profile" subtitle="Your account and loyalty information">
@@ -109,7 +123,7 @@ export default function Profile() {
               <h3 className="text-base font-semibold text-zinc-100">Customer Profile</h3>
               <span className="ml-auto px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-medium text-emerald-400">Active</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div className="bg-surface-3/50 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Award className="w-4 h-4 text-amber-400" />
@@ -123,6 +137,13 @@ export default function Profile() {
                   <p className="text-xs text-zinc-500">ZK Tickets</p>
                 </div>
                 <p className="text-2xl font-bold text-zinc-100">{storedTickets.length}</p>
+              </div>
+              <div className="bg-surface-3/50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <p className="text-xs text-zinc-500">NFTs</p>
+                </div>
+                <p className="text-2xl font-bold text-zinc-100">{storedNfts.length}</p>
               </div>
             </div>
           </motion.div>
@@ -143,6 +164,62 @@ export default function Profile() {
             <button onClick={createProfile} disabled={loading} className="btn-primary mx-auto flex items-center gap-2">
               {loading && <Loader2 className="w-4 h-4 animate-spin" />} Create Profile
             </button>
+          </motion.div>
+        )}
+
+        {/* My NFTs */}
+        {storedNfts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="glass-card p-6"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <h3 className="text-base font-semibold text-zinc-100">My Ticket NFTs</h3>
+              <span className="ml-auto text-xs text-zinc-500">{storedNfts.length} collected</span>
+            </div>
+            <div className="space-y-3">
+              {storedNfts.map((nft, i) => (
+                <motion.div
+                  key={nft.mint}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.05 }}
+                  className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-500/5 via-surface-3/50 to-pink-500/5 rounded-xl border border-purple-500/10 hover:border-purple-500/25 transition-all duration-200 group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center shrink-0">
+                    <ImageIcon className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-zinc-200 truncate">{nft.eventName} Ticket</p>
+                    <p className="text-[10px] font-mono text-zinc-500 truncate">
+                      {nft.mint.slice(0, 8)}...{nft.mint.slice(-8)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(nft.mint);
+                        toast.success('NFT address copied!');
+                      }}
+                      className="text-zinc-600 hover:text-zinc-300 transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                    </button>
+                    <a
+                      href={`https://explorer.solana.com/address/${nft.mint}?cluster=devnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-600 hover:text-purple-400 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
 

@@ -197,6 +197,38 @@ pub struct BookTicket<'info> {
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 
+    // nft minting
+
+    #[account(
+        init,
+        payer = buyer,
+        mint :: decimals = 0,
+        mint :: authority = buyer,
+        mint :: freeze_authority = buyer,
+
+    )]
+    pub nft_mint : Account<'info,Mint>,
+
+    #[account(
+        init,
+        payer = buyer,
+        associated_token :: mint = nft_mint,
+        associated_token :: authority = buyer,
+    )]
+    pub destination : Account<'info,TokenAccount>,
+
+    /// CHECK: Metaplex Program validates and initializes this PDA
+    #[account(mut)]
+    pub metadata : UncheckedAccount<'info>,
+    
+    /// CHECK: Metaplex Program validates and initializes this PDA
+    #[account(mut)]
+    pub master_edition : UncheckedAccount<'info>,
+    
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub token_metadata_program: Program<'info, anchor_spl::metadata::Metadata>,
+    pub rent: Sysvar<'info, Rent>,
+
 }
 
 #[derive(Accounts)]

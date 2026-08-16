@@ -94,8 +94,21 @@ export const IDL = {
         { name: 'ticketRecord', writable: true, signer: false },
         { name: 'tokenProgram', writable: false, signer: false },
         { name: 'systemProgram', writable: false, signer: false },
+        { name: 'nftMint', writable: true, signer: true },
+        { name: 'destination', writable: true, signer: false },
+        { name: 'metadata', writable: true, signer: false },
+        { name: 'masterEdition', writable: true, signer: false },
+        { name: 'associatedTokenProgram', writable: false, signer: false },
+        { name: 'tokenMetadataProgram', writable: false, signer: false },
+        { name: 'rent', writable: false, signer: false },
       ],
-      args: [{ name: 'commitment', type: { array: ['u8', 32] } }],
+      args: [
+        { name: 'commitment', type: { array: ['u8', 32] } },
+        {
+          name: 'params',
+          type: { defined: { name: 'nftTokens' } },
+        },
+      ],
     },
     {
       name: 'verifyCheckIn',
@@ -212,6 +225,17 @@ export const IDL = {
           { name: 'nullifierHash', type: { array: ['u8', 32] } },
           { name: 'claimedAt', type: 'i64' },
           { name: 'bump', type: 'u8' },
+        ],
+      },
+    },
+    {
+      name: 'nftTokens',
+      type: {
+        kind: 'struct',
+        fields: [
+          { name: 'name', type: 'string' },
+          { name: 'symbol', type: 'string' },
+          { name: 'uri', type: 'string' },
         ],
       },
     },

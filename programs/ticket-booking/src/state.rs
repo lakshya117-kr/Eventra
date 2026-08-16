@@ -65,3 +65,11 @@ pub struct ZkNullifierRegistry {
     pub claimed_at: i64,          // Timestamp of entry
     pub bump: u8,
 }
+
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone)]
+pub struct nftTokens{
+    pub name : String,
+    pub symbol : String,
+    pub uri : String,
+}
+

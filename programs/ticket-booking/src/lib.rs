@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
 pub mod context;
-mod state;
+pub mod state;
 pub use context::*;
+pub use state::*;
 
 declare_id!("82Tzgv6JU15FD6jQH1hLwuvBDj8VjQ2Dz1SdnonU3ciA");
 pub use anchor_lang::system_program;
@@ -102,7 +103,7 @@ mod ticket_Booking {
         Ok(())
     }
 
-    pub fn book_ticket(ctx: Context<BookTicket>,commitment: [u8; 32]) -> Result<()> {
+    pub fn book_ticket(ctx: Context<BookTicket>,commitment: [u8; 32],params: nftTokens) -> Result<()> {
         let event_account = &mut ctx.accounts.event_account;
         let ticket_record = &mut ctx.accounts.ticket_record;
 
@@ -127,6 +128,69 @@ mod ticket_Booking {
         ticket_record.is_used = false;
         ticket_record.bump = ctx.bumps.ticket_record;
         event_account.ticket_sold += 1;
+
+        let _cpi_account = MintTo {
+            mint: ctx.accounts.nft_mint.to_account_info(),
+            to: ctx.accounts.destination.to_account_info(),
+            authority: ctx.accounts.buyer.to_account_info(),
+        };
+
+        let _ctx_cpi = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            _cpi_account,
+        );
+        mint_to(_ctx_cpi, 1)?;
+
+        let data_token = anchor_spl::metadata::mpl_token_metadata::types::DataV2 {
+            name: params.name,
+            symbol: params.symbol,
+            uri: params.uri,
+            seller_fee_basis_points: 0,
+            creators: None,
+            uses: None,
+            collection: None,
+        };
+
+        let metadata_cpi = anchor_spl::metadata::CreateMetadataAccountsV3 {
+            metadata: ctx.accounts.metadata.to_account_info(),
+            mint: ctx.accounts.nft_mint.to_account_info(),
+            mint_authority: ctx.accounts.buyer.to_account_info(),
+            payer: ctx.accounts.buyer.to_account_info(),
+            update_authority: ctx.accounts.buyer.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        };
+    
+        anchor_spl::metadata::create_metadata_accounts_v3(
+            CpiContext::new(
+                ctx.accounts.token_metadata_program.to_account_info(),
+                metadata_cpi,
+            ),
+            data_token,
+            true,
+            true,
+            None,
+        )?;
+
+        let master_edition_cpi = anchor_spl::metadata::CreateMasterEditionV3 {
+            edition: ctx.accounts.master_edition.to_account_info(),
+            mint: ctx.accounts.nft_mint.to_account_info(),
+            update_authority: ctx.accounts.buyer.to_account_info(),
+            mint_authority: ctx.accounts.buyer.to_account_info(),
+            payer: ctx.accounts.buyer.to_account_info(),
+            metadata: ctx.accounts.metadata.to_account_info(),
+            token_program: ctx.accounts.token_program.to_account_info(),
+            system_program: ctx.accounts.system_program.to_account_info(),
+            rent: ctx.accounts.rent.to_account_info(),
+        };
+
+        anchor_spl::metadata::create_master_edition_v3(
+            CpiContext::new(
+                ctx.accounts.token_metadata_program.to_account_info(),
+                master_edition_cpi,
+            ),
+            Some(0),
+        )?;
 
         Ok(())
     }
