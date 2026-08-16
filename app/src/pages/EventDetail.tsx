@@ -46,6 +46,7 @@ export default function EventDetail() {
               name: data.name || evt.name,
               description: data.description || '',
               image: data.image ? ipfsToHttp(data.image) : '',
+              rawImage: data.image || '',
               date: data.date,
               location: data.location,
               category: data.category,
@@ -76,7 +77,7 @@ export default function EventDetail() {
         event.ticketPrice,
         event.name,
         metadata?.description,
-        metadata?.image,
+        metadata?.rawImage || metadata?.image,
       );
       if (result) {
         setBooked(true);

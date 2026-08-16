@@ -58,6 +58,7 @@ export interface EventMetadata {
   name: string;
   description: string;
   image: string;
+  rawImage?: string;
   date?: string;
   location?: string;
   category?: string;
