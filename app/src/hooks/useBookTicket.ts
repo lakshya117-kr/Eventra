@@ -17,6 +17,7 @@ export function useBookTicket() {
     ticketPriceRaw: number,
     eventName: string,
     eventDescription?: string,
+    eventImage?: string,
   ) => {
     if (!program || !wallet.publicKey || !connection) return;
     setLoading(true);
@@ -102,7 +103,7 @@ export function useBookTicket() {
         name: `${eventName} — Ticket NFT`,
         symbol: 'EVTK',
         description: eventDescription || `NFT ticket for ${eventName}`,
-        image: '', // Could be event image if available
+        image: eventImage || '',
         attributes: [
           { trait_type: 'Event', value: eventName },
           { trait_type: 'Ticket Type', value: 'General Admission' },

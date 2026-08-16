@@ -76,6 +76,7 @@ export default function EventDetail() {
         event.ticketPrice,
         event.name,
         metadata?.description,
+        metadata?.image,
       );
       if (result) {
         setBooked(true);
