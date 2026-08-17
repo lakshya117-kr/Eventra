@@ -11,6 +11,7 @@ export interface UserConfig {
 
 export interface Organizer {
   authority: PublicKey;
+  name: string;
   reputationScore: number;
   totalEventHosted: number;
   bump: number;

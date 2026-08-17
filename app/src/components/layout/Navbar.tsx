@@ -5,7 +5,7 @@ import { Ticket, LayoutDashboard, Calendar, PlusCircle, User, ScanLine } from 'l
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/events', label: 'Events', icon: Calendar },
-  { to: '/create-event', label: 'Create', icon: PlusCircle },
+  { to: '/organizer', label: 'Organizer', icon: PlusCircle },
   { to: '/profile', label: 'Profile', icon: User },
   { to: '/scanner', label: 'Scanner', icon: ScanLine },
 ];

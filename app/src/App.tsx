@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
 import EventDetail from './pages/EventDetail';
 import CreateEvent from './pages/CreateEvent';
+import OrganizerDashboard from './pages/Organizer';
 import Profile from './pages/Profile';
 import Scanner from './pages/Scanner';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -46,6 +47,7 @@ export default function App() {
                     <Route path="/events" element={<Events />} />
                     <Route path="/events/:eventKey" element={<EventDetail />} />
                     <Route path="/create-event" element={<CreateEvent />} />
+                    <Route path="/organizer" element={<OrganizerDashboard />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/scanner" element={<Scanner />} />
                   </Routes>

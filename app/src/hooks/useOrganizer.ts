@@ -21,6 +21,7 @@ export function useOrganizer() {
       const account = await (program.account as any).organizer.fetch(pda);
       setOrganizer({
         authority: account.authority as PublicKey,
+        name: account.name as string,
         reputationScore: Number(account.reputationScore),
         totalEventHosted: Number(account.totalEventHosted),
         bump: account.bump,
@@ -34,7 +35,7 @@ export function useOrganizer() {
     }
   }, [program, wallet.publicKey]);
 
-  const registerOrganizer = useCallback(async () => {
+  const registerOrganizer = useCallback(async (name: string) => {
     if (!program || !wallet.publicKey) return;
     setLoading(true);
     try {
@@ -43,7 +44,7 @@ export function useOrganizer() {
         program.programId
       );
       await program.methods
-        .createOrganization()
+        .createOrganization(name)
         .accounts({
           organizer: wallet.publicKey,
           organizerAccount,

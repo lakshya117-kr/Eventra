@@ -14,7 +14,8 @@ pub struct UserConfig {
 #[derive(InitSpace)]
 pub struct Organizer {
     pub authority: Pubkey,
-    // pub is_verifie
+    #[max_len(32)]
+    pub name: String,
     pub reputation_score: u64,
     pub total_event_hosted: u64,
     pub bump: u8,

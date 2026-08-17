@@ -62,9 +62,10 @@ mod ticket_Booking {
         Ok(())
     }
 
-    pub fn create_organization(ctx: Context<RegisterOrganizer>) -> Result<()> {
+    pub fn create_organization(ctx: Context<RegisterOrganizer>, name: String) -> Result<()> {
         let organizer_account = &mut ctx.accounts.organizer_account;
         organizer_account.authority = ctx.accounts.organizer.key();
+        organizer_account.name = name;
         organizer_account.reputation_score = 0;
         organizer_account.total_event_hosted = 0;
         organizer_account.bump = ctx.bumps.organizer_account;

@@ -51,7 +51,7 @@ export const IDL = {
         { name: 'organizerAccount', writable: true, signer: false },
         { name: 'systemProgram', writable: false, signer: false },
       ],
-      args: [],
+      args: [{ name: 'name', type: 'string' }],
     },
     {
       name: 'createEvent',
@@ -171,6 +171,7 @@ export const IDL = {
         kind: 'struct',
         fields: [
           { name: 'authority', type: 'pubkey' },
+          { name: 'name', type: 'string' },
           { name: 'reputationScore', type: 'u64' },
           { name: 'totalEventHosted', type: 'u64' },
           { name: 'bump', type: 'u8' },

@@ -51,9 +51,9 @@ export default function CreateEvent() {
       {!organizer ? (
         <div className="glass-card p-8 text-center max-w-md mx-auto">
           <h3 className="text-lg font-semibold text-zinc-100 mb-2">Register as Organizer</h3>
-          <p className="text-sm text-zinc-500 mb-6">You need to register before creating events.</p>
-          <button onClick={registerOrganizer} disabled={loading} className="btn-primary mx-auto flex items-center gap-2">
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />} Register Now
+          <p className="text-sm text-zinc-500 mb-6">You need to register an organization profile before creating events.</p>
+          <button onClick={() => navigate('/organizer')} className="btn-primary mx-auto flex items-center gap-2">
+            Go to Organizer Dashboard
           </button>
         </div>
       ) : (

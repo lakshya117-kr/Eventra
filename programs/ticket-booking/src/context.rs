@@ -174,16 +174,16 @@ pub struct BookTicket<'info> {
         mut,
         constraint = buyer_token_account.owner == buyer.key()
     )]
-    pub buyer_token_account: Account<'info, TokenAccount>,
+    pub buyer_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
         constraint = organizer_token_account.owner == event_account.organizer
     )]
-    pub organizer_token_account: Account<'info, TokenAccount>,
+    pub organizer_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(mut)]
-    pub event_account: Account<'info, Event>,
+    pub event_account: Box<Account<'info, Event>>,
 
     #[account(
         init,
@@ -192,7 +192,7 @@ pub struct BookTicket<'info> {
         seeds = [b"ticket", event_account.key().as_ref(), commitment.as_ref()],
         bump
     )]
-    pub ticket_record : Account<'info, TicketRecord>,
+    pub ticket_record : Box<Account<'info, TicketRecord>>,
 
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -207,7 +207,7 @@ pub struct BookTicket<'info> {
         mint :: freeze_authority = buyer,
 
     )]
-    pub nft_mint : Account<'info,Mint>,
+    pub nft_mint : Box<Account<'info,Mint>>,
 
     #[account(
         init,
@@ -215,7 +215,7 @@ pub struct BookTicket<'info> {
         associated_token :: mint = nft_mint,
         associated_token :: authority = buyer,
     )]
-    pub destination : Account<'info,TokenAccount>,
+    pub destination : Box<Account<'info,TokenAccount>>,
 
     /// CHECK: Metaplex Program validates and initializes this PDA
     #[account(mut)]
